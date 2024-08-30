@@ -17,10 +17,15 @@ def sent_analyzer():
         score for the provided text.
     '''
     text_to_analyze = request.args.get('textToAnalyze')
+    # Checking if text is blank or not
+    if text_to_analyze == "":
+        return "Input text is empty!!"
     res = sentiment_analyzer(text_to_analyze)
-    label_split = res['label'].split('_')
-    label = label_split[1]
-    return f"The given has been identified as {label} with a score of {res['score']}", 200
+    if res['label'] is not None:
+        label_split = res['label'].split('_')
+        label = label_split[1]
+        return f"The given has been identified as {label} with a score of {res['score']}", 200
+    return "Invalid Input! Try Again"
 
 @app.route("/")
 def render_index_page():
@@ -30,6 +35,4 @@ def render_index_page():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    ''' This functions executes the flask app and deploys it on localhost:5000
-    '''
     app.run(debug = True, port = 5000)
